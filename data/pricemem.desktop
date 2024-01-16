@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=PriceMem
+Comment=Product price management tool
+Exec=pricemem
+Icon=pricemem
+Categories=Office;
+Terminal=false
+StartupNotify=false
