@@ -18,4 +18,6 @@ class App:
     window = None
     # 64x64 QImage
     product_icon = None
+    # product category of last added new product
+    last_category = "Unknown"
 

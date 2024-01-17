@@ -417,9 +417,13 @@ class ProductEditDialog(QDialog):
         self.image = None
         self.image_changed = False
         self.imageLabel.setImage(self.image)
+        index = self.categoryCombo.findText(App.last_category)
+        if index>=0:
+            self.categoryCombo.setCurrentIndex(index)
 
 
     def setValues(self, name=None, brand=None, category=None, price=None, description=None, image=None):
+        """ this function is used when new product is added """
         if name:
             self.nameEdit.setText(name)
         if brand:
@@ -472,6 +476,7 @@ class ProductEditDialog(QDialog):
     def accept(self):
         if self.nameEdit.text()=="" or self.priceEdit.text()=="":
             return
+        App.last_category = self.categoryCombo.currentText()
         QDialog.accept(self)
 
 

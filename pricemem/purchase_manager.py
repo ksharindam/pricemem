@@ -345,7 +345,7 @@ class ProductHistoryDialog(QDialog):
         QDialog.__init__(self, parent)
         self.product_id = product_info[0]
         self.setWindowTitle("Product Purchase History")
-        self.resize(640, 480)
+        self.resize(480, 480)
 
         self.purchaseTable = QTableWidget(self)
         self.purchaseTable.setAlternatingRowColors(True)
