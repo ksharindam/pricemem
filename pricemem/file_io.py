@@ -7,10 +7,11 @@ from common import App
 
 def csv_string(text):
     """ quotes string for csv when required """
-    delimiters = (",", ";", "\t")
+    delimiters = (",", ";", "\t", '"')# double quote is not delimiter
     for d in delimiters:
         if d in text:
-            return '"%s"' % text
+            # double quote inside string should be replaced with two double quotes
+            return '"%s"' % text.replace('"', '""')
     return text
 
 
