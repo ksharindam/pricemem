@@ -283,7 +283,7 @@ class ProductWidget(QWidget):
         self.price.setText("Rs. %s/-"%price)
         # set image
         img = QImage(App.IMAGES_DIR + "/%s.jpg"%pdt_id)
-        img = img.isNull() and App.product_icon or img.scaled(64,64)
+        img = img.isNull() and App.product_icon or img.scaled(64,64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.thumbnail.setPixmap(QPixmap.fromImage(img))
         #self.setToolTip(description)
 
