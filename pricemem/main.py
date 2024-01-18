@@ -107,6 +107,7 @@ class Window(QMainWindow):
         quitBtn = QToolButton(self.centralwidget)
         quitBtn.setIcon(QIcon(":/icons/quit.png"))
         quitBtn.setIconSize(QSize(22,22))
+        quitBtn.setShortcut("Ctrl+Q")
         quitBtn.setToolTip("Quit")
 
         searchbar = SearchBar(self.centralwidget)
