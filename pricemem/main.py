@@ -458,7 +458,7 @@ class ProductEditDialog(QDialog):
 
     def changeImage(self):
         filename, filtr = QFileDialog.getOpenFileName(self, "Open File",
-                        "", "JPEG Image (*.jpg *.jpeg);;")
+                        "", "All Images (*.jpg *.jpeg *.webp);;")
         if not filename:
             return
         image = QImage(filename)
