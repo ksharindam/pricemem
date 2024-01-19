@@ -350,7 +350,7 @@ class ProductHistoryDialog(QDialog):
         self.purchaseTable = QTableWidget(self)
         self.purchaseTable.setAlternatingRowColors(True)
         self.purchaseTable.setColumnCount(4)
-        self.purchaseTable.setHorizontalHeaderLabels(["Date","Quantity", "Total Price", "Price/Unit"])
+        self.purchaseTable.setHorizontalHeaderLabels(["Date","Quantity", "Total Price", "Rate"])
         self.purchaseTable.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.purchaseTable.verticalHeader().setDefaultSectionSize(25)
         self.btnBox = QDialogButtonBox(QDialogButtonBox.Close, Qt.Horizontal, self)
@@ -375,8 +375,8 @@ class ProductHistoryDialog(QDialog):
 
         for row, row_data in enumerate(purchases):
             date, pdt_id, title, quantity, price = row_data
-            price_per_unit = "%g" % (float(price)/get_quantity_number(quantity))
-            row_data = [to_readable_date(date), quantity, price, price_per_unit]
+            rate = "%g" % (float(price)/get_quantity_number(quantity))
+            row_data = [to_readable_date(date), quantity, price, rate]
             for col, text in enumerate(row_data):
                 item = QTableWidgetItem(text)
                 self.purchaseTable.setItem(row, col, item)
