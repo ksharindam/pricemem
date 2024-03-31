@@ -110,6 +110,8 @@ class NewPurchaseDialog(QDialog):
 
 
 class ProductInput(QLineEdit):
+    productSelected = pyqtSignal(list)
+
     def __init__(self, parent):
         QLineEdit.__init__(self, parent)
         self.setStyleSheet("QLineEdit { padding: 2 22 2 2; background: white; border: 1px solid gray; border-radius: 3px;}")
@@ -155,6 +157,7 @@ class ProductInput(QLineEdit):
         # model we have set. it can be obtained using sibling() method
         index = index.sibling(index.row(), 1).data(Qt.DisplayRole)
         self.product = App.products[int(index)]
+        self.productSelected.emit(self.product)
 
     def updateData(self):
         model = self._completer.model()

@@ -10,25 +10,24 @@ sys.path.append(os.path.dirname(__file__)) # for enabling python 2 like import
 from __init__ import __version__, COPYRIGHT_YEAR, AUTHOR_NAME, AUTHOR_EMAIL
 
 
-from PyQt5.QtCore import ( Qt, qVersion, pyqtSignal, QSettings,
-    QStandardPaths, QSize, QPoint
-)
-from PyQt5.QtGui import ( QIcon, QPixmap, QImage, QPainter,
-)
+from PyQt5.QtCore import Qt, qVersion, pyqtSignal, QSettings, QSize, QPoint
+
+from PyQt5.QtGui import QIcon, QPixmap, QImage, QPainter
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QStatusBar, QGridLayout, QWidget,
     QLineEdit, QScrollArea, QDialog, QComboBox, QDialogButtonBox, QLabel, QToolButton,
     QMenu, QHBoxLayout, QVBoxLayout, QStyleOption, QStyle, QSizePolicy, QFileDialog,
-    QMessageBox, QCheckBox
+    QMessageBox, QCheckBox, QStyleFactory
 )
 
 import resources_rc
 from purchase_manager import NewPurchaseDialog, PurchaseHistoryDialog, ProductHistoryDialog
-from common import App
+from invoice import InvoiceDialog
+from common import App, updateDataPaths
 from file_io import *
 
-#import platform
+import platform
 
 
 categories = ["Electronics", "Electricals", "Grocery", "Hardware",
@@ -103,6 +102,11 @@ class Window(QMainWindow):
         purchaseHistoryBtn.setIcon(QIcon(":/icons/order-history.png"))
         purchaseHistoryBtn.setIconSize(QSize(22,22))
         purchaseHistoryBtn.setToolTip("Purchase History")
+        # Purchase History Button
+        invoiceBtn = QToolButton(self.centralwidget)
+        invoiceBtn.setIcon(QIcon(":/icons/invoice.png"))
+        invoiceBtn.setIconSize(QSize(22,22))
+        invoiceBtn.setToolTip("Generate Invoice")
         # Quit Button
         quitBtn = QToolButton(self.centralwidget)
         quitBtn.setIcon(QIcon(":/icons/quit.png"))
@@ -124,6 +128,7 @@ class Window(QMainWindow):
         self.toolbarLayout.addWidget(addProductBtn)
         self.toolbarLayout.addWidget(addPurchaseBtn)
         self.toolbarLayout.addWidget(purchaseHistoryBtn)
+        self.toolbarLayout.addWidget(invoiceBtn)
         self.toolbarLayout.addWidget(searchbar)
         self.toolbarLayout.addWidget(quitBtn)
         # add other layout  and widgets to main layout
@@ -135,6 +140,7 @@ class Window(QMainWindow):
         addProductBtn.clicked.connect(self.addNewProduct)
         addPurchaseBtn.clicked.connect(self.addNewPurchase)
         purchaseHistoryBtn.clicked.connect(self.showPurchaseHistory)
+        invoiceBtn.clicked.connect(self.generateInvoice)
         quitBtn.clicked.connect(self.close)
 
 
@@ -185,6 +191,10 @@ class Window(QMainWindow):
 
     def showPurchaseHistory(self):
         dlg = PurchaseHistoryDialog(self)
+        dlg.exec()
+
+    def generateInvoice(self):
+        dlg = InvoiceDialog(self)
         dlg.exec()
 
     def search(self, text=""):
@@ -506,13 +516,9 @@ def main():
     #app.setOrganizationName("Arindamsoft")
     app.setApplicationName("PriceMem")
     # use fusion style on Windows platform
-    #if platform.system()=="Windows" and "Fusion" in QStyleFactory.keys():
-    #    app.setStyle(QStyleFactory.create("Fusion"))
-    #global App.DATA_DIR, App.IMAGES_DIR
-    App.DATA_DIR = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
-    App.IMAGES_DIR = App.DATA_DIR + "/images"
-    App.PRODUCTS_FILE = App.DATA_DIR + "/products.csv"
-    App.PURCHASES_FILE = App.DATA_DIR + "/purchases.csv"
+    if platform.system()=="Windows" and "Fusion" in QStyleFactory.keys():
+        app.setStyle(QStyleFactory.create("Fusion"))
+    updateDataPaths()
     # load window
     App.window = Window()
     sys.exit(app.exec())
