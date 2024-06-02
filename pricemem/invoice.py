@@ -2,13 +2,13 @@
 # This file is a part of PriceMem Program which is GNU GPLv3 licensed
 # Copyright (C) 2024 Arindam Chaudhuri <arindamsoft94@gmail.com>
 
-from PyQt5.QtCore import QTimer, Qt, QRect, QSettings
+from PyQt5.QtCore import QTimer, Qt, QRect, QSettings, pyqtSignal
 from PyQt5.QtGui import (QPixmap, QPainter, QPen, QFontMetrics, QFont, QIcon,
     QDoubleValidator, QTransform, QIntValidator
 )
 from PyQt5.QtWidgets import (QGridLayout, QVBoxLayout, QHBoxLayout, QFormLayout,
     QSizePolicy, QDialog, QDialogButtonBox, QFrame, QGroupBox, QWidget, QScrollArea,
-    QLabel, QLineEdit, QPushButton, QCompleter
+    QLabel, QLineEdit, QPushButton, QCompleter, QMenu
 )
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
 
@@ -160,7 +160,7 @@ class InvoiceDialog(QDialog):
         self.shopContactEdit.setText(shop_contact)
 
         # --------- Connect Signals ------------
-
+        self.invoice.editItemRequested.connect(self.editItem)
         self.invoiceNoEdit.textChanged.connect(self.updateInvoiceData)
         self.dateEdit.textChanged.connect(self.updateInvoiceData)
         self.customerNameEdit.textChanged.connect(self.updateInvoiceData)
@@ -253,6 +253,13 @@ class InvoiceDialog(QDialog):
         self.clearAddItemsWidget()
         self.invoice.redraw()
 
+    def editItem(self, item):
+        item, quantity, rate, price = item
+        self.itemEdit.setText(item)
+        self.quantityEdit.setText(quantity)
+        self.rateEdit.setText("%g"%float(rate))
+        self.priceEdit.setText("%g"%float(price))
+
     def clearAddItemsWidget(self):
         self.itemEdit.clear()
         self.quantityEdit.clear()
@@ -266,6 +273,7 @@ class InvoiceDialog(QDialog):
         self.clearAddItemsWidget()
         self.deliveryChargeEdit.clear()
         self.discountEdit.clear()
+        self.invoice.clear()
         self.invoice.redraw()
 
     def updateNewInvoiceNo(self):
@@ -311,6 +319,9 @@ class InvoiceDialog(QDialog):
 
 
 class Invoice(QLabel):
+    # signals
+    editItemRequested = pyqtSignal(list)
+
     def __init__(self, parent):
         QLabel.__init__(self, parent)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -327,9 +338,19 @@ class Invoice(QLabel):
         self.address = ""
         self.mob_no = ""
         self.item_list = []# all item data are str
-        self.max_item = 15
         self.delivery_charge = 0
         self.discount = 0
+        # table pos an dimension
+        self.max_item = 15
+        self.row_count = self.max_item+4 # including header and 3 footer rows
+        self.rel_table_left = 1/21
+        self.rel_table_top = 0.27
+        self.rel_table_w = 19/21
+        self.rel_table_h = 0.6
+
+    def clear(self):
+        self.item_list.clear()
+
 
     def setPageSize(self, w, h):
         self.page_size = w, h
@@ -357,7 +378,7 @@ class Invoice(QLabel):
         h2_font = QFont(font_family, 12, QFont.Bold)
         h3_font = QFont(font_family, 9.5, QFont.Bold)
         normal_font = QFont(font_family, 10)
-        data_font = QFont(font_family, 8)
+        data_font = QFont(font_family, 9)
 
         painter.setPen(QPen(Qt.CustomDashLine))
 
@@ -417,14 +438,14 @@ class Invoice(QLabel):
         line_top += 3*line_height
 
         # Draw Table
-        table_w = page_w * 19/21
-        table_h = page_h * 0.6
-        row_count = self.max_item+4 # including header and 3 footer rows
+        table_w = page_w * self.rel_table_w
+        table_h = page_h * self.rel_table_h
+        row_count = self.row_count
         row_height = table_h/row_count
-        table_top = page_h*0.27
-        table_bottom = table_top + row_count*row_height
-        table_left = page_w*1/21
-        table_right = page_w*20/21
+        table_top = page_h * self.rel_table_top
+        table_left = page_w * self.rel_table_left
+        table_bottom = table_top + table_h
+        table_right = table_left + table_w #page_w*20/21
 
         # initialize table properties
         table_pos = (table_left, table_top)
@@ -493,3 +514,21 @@ class Invoice(QLabel):
                             "%.2f"%self.discount)
             total -= float(self.discount)
             painter.drawText(getCellRect(row_count-1,4), Qt.AlignRight|Qt.AlignVCenter, "%.2f"%total)
+
+
+    def contextMenuEvent(self, ev):
+        y = ev.pos().y()/self.height()
+        row = int((y - self.rel_table_top) // (self.rel_table_h/self.row_count) - 1 )
+        if 0<=row<len(self.item_list):
+            menu = QMenu(self)
+            menu.addAction(QIcon(":/icons/edit.png"), "Edit")
+            menu.addAction(QIcon(":/icons/delete.png"), "Delete")
+            action = menu.exec(ev.globalPos())
+            if action:
+                if action.text()=="Edit":
+                    item = self.item_list.pop(row)
+                    self.redraw()
+                    self.editItemRequested.emit(item)
+                elif action.text()=="Delete":
+                    self.item_list.pop(row)
+                    self.redraw()

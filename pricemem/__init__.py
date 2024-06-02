@@ -28,7 +28,7 @@ Description = Product Price management application for small shops
 
 
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 COPYRIGHT_YEAR = "2024"
 AUTHOR_NAME = "Arindam Chaudhuri"
 AUTHOR_EMAIL = "arindamsoft94@gmail.com"

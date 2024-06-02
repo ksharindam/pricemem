@@ -1,6 +1,6 @@
 ; HM NIS Edit Wizard helper defines
 !define PROG_NAME "PriceMem"
-!define PROG_VERSION "0.1.0"
+!define PROG_VERSION "0.2.0"
 !define PROG_PUBLISHER "Arindamsoft"
 !define PROG_ICON "pricemem.ico"
 !define PROG_EXEC "pricemem.exe"
