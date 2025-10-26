@@ -246,6 +246,7 @@ class Window(QMainWindow):
             self.settings.setValue("WindowHeight", self.height())
         self.settings.setValue("WindowMaximized", self.isMaximized())
         self.settings.setValue("LastProdID", App.last_product_id)
+        QMainWindow.closeEvent(self, ev)
 
 
 class ProductWidget(QWidget):

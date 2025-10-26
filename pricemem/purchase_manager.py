@@ -308,20 +308,22 @@ class PurchaseHistoryDialog(QDialog):
 
 class DateEdit(QLineEdit):
     """ automatically puts slash between numbers """
-    # signals
-    dateEntered = pyqtSignal(str)
-    # constructor
     def __init__(self, parent):
         QLineEdit.__init__(self, parent)
+        self.sep = "/" # date separator
         # validator for "DD/MM/YYYY" (allows entering DDMMYYYY then converts to DD/MM/YYYY)
-        self.setValidator(QRegExpValidator(QRegExp("\d{2}[0-9/]\d{2}[0-9/]\d{4}"), self))
+        self.setValidator(QRegExpValidator(QRegExp("\d{2}[0-9%s]\d{2}[0-9%s]\d{4}"%(self.sep,self.sep)), self))
 
     def keyPressEvent(self, ev):
         # automatically insert / where required
         QLineEdit.keyPressEvent(self, ev)
         text = self.text()
-        if len(text) in (3,6) and text[-1]!="/":
-            self.setText(text[:-1]+"/"+text[-1])
+        if len(text) in (3,6) and text[-1]!=self.sep:
+            self.setText(text[:-1] + self.sep + text[-1])
+
+    def setToday(self):
+        """ set today's date """
+        self.setText(datetime.today().strftime(self.sep.join(["%d","%m","%Y"])))
 
 
 

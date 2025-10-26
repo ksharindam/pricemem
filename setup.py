@@ -8,7 +8,7 @@ def readme():
 
 if platform.system()=='Linux':
     data_files = [('share/applications', ['data/pricemem.desktop']),
-                ('share/icons', ['data/icons/pricemem.png'])]
+                ('share/icons/hicolor/scalable/apps', ['data/icons/pricemem.png'])]
 else:
     data_files = []
 

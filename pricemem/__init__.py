@@ -9,7 +9,7 @@ Debian Dependency = python3-pyqt5
 Description = Product Price management application for small shops
 
 ...........................................................................
-|   Copyright (C) 2024 Arindam Chaudhuri <arindamsoft94@gmail.com>         |
+|   Copyright (C) 2024-2025 Arindam Chaudhuri <arindamsoft94@gmail.com>    |
 |                                                                          |
 |   This program is free software: you can redistribute it and/or modify   |
 |   it under the terms of the GNU General Public License as published by   |
@@ -28,7 +28,7 @@ Description = Product Price management application for small shops
 
 
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 COPYRIGHT_YEAR = "2024"
 AUTHOR_NAME = "Arindam Chaudhuri"
 AUTHOR_EMAIL = "arindamsoft94@gmail.com"

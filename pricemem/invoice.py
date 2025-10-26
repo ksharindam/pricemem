@@ -2,7 +2,7 @@
 # This file is a part of PriceMem Program which is GNU GPLv3 licensed
 # Copyright (C) 2024 Arindam Chaudhuri <arindamsoft94@gmail.com>
 
-from PyQt5.QtCore import QTimer, Qt, QRect, QSettings, pyqtSignal
+from PyQt5.QtCore import QTimer, Qt, QRectF, QPointF, QSettings, pyqtSignal
 from PyQt5.QtGui import (QPixmap, QPainter, QPen, QFontMetrics, QFont, QIcon,
     QDoubleValidator, QTransform, QIntValidator
 )
@@ -376,7 +376,7 @@ class Invoice(QLabel):
         font_family = painter.font().family()
         h1_font = QFont(font_family, 20, QFont.Bold)
         h2_font = QFont(font_family, 12, QFont.Bold)
-        h3_font = QFont(font_family, 9.5, QFont.Bold)
+        h3_font = QFont(font_family, 10, QFont.Bold)
         normal_font = QFont(font_family, 10)
         data_font = QFont(font_family, 9)
 
@@ -386,15 +386,15 @@ class Invoice(QLabel):
 
         painter.setFont(normal_font)
         line_height = QFontMetrics(normal_font, painter.device()).height()
-        rect = QRect(0, line_top, page_w*20/21, line_height)
+        rect = QRectF(0, line_top, page_w*20/21, line_height)
         painter.drawText(rect, Qt.AlignRight, "Date : " + self.date)
 
-        rect = QRect(page_w*1/21, line_top, page_w, line_height)
+        rect = QRectF(page_w*1/21, line_top, page_w, line_height)
         painter.drawText(rect, Qt.AlignLeft, "Invoice No : " + self.invoice_no)
 
         painter.setFont(h2_font)
         line_height = QFontMetrics(h2_font, painter.device()).height()
-        rect = QRect(0, line_top, page_w, line_height)
+        rect = QRectF(0, line_top, page_w, line_height)
         painter.drawText(rect, Qt.AlignHCenter, "INVOICE")
         line_top += 1.5*line_height
 
@@ -404,35 +404,35 @@ class Invoice(QLabel):
 
         painter.setFont(h1_font)
         line_height = QFontMetrics(h1_font, painter.device()).height()
-        shop_name_rect = QRect(0, line_top, page_w, line_height)
+        shop_name_rect = QRectF(0, line_top, page_w, line_height)
         painter.drawText(shop_name_rect, Qt.AlignHCenter, self.shop_name)
         line_top += 1.2*line_height
 
         # Write Shop Address
         painter.setFont(normal_font)
         line_height = QFontMetrics(normal_font, painter.device()).height()
-        shop_addr_rect = QRect(0, line_top, page_w, line_height)
+        shop_addr_rect = QRectF(0, line_top, page_w, line_height)
         painter.drawText(shop_addr_rect, Qt.AlignHCenter, self.shop_addr)
         line_top += 1.2*line_height
 
         # Write shop contact info
-        shop_contact_rect = QRect(0, line_top, page_w, line_height)
+        shop_contact_rect = QRectF(0, line_top, page_w, line_height)
         painter.drawText(shop_contact_rect, Qt.AlignHCenter, self.shop_contact)
         line_top += 2*line_height
 
         painter.setFont(h3_font)
         font_metrics = QFontMetrics(h3_font, painter.device())
         line_height = font_metrics.height()
-        rect = QRect(page_w*1/21, line_top, page_w, line_height)
+        rect = QRectF(page_w*1/21, line_top, page_w, line_height)
         painter.drawText(rect, Qt.AlignLeft, "Customer Name :")
         cust_name_rect = rect.adjusted(font_metrics.width("Customer Name :  "),0,0,0)
 
-        rect = QRect(page_w*15/21, line_top, page_w*6/21, line_height)
+        rect = QRectF(page_w*15/21, line_top, page_w*6/21, line_height)
         painter.drawText(rect, Qt.AlignLeft, "Mob. :")
         mob_no_rect = rect.adjusted(font_metrics.width("Mob. :  "),0,0,0)
         line_top += 1.5*line_height
 
-        rect = QRect(page_w*1/21, line_top, page_w, line_height)
+        rect = QRectF(page_w*1/21, line_top, page_w, line_height)
         painter.drawText(rect, Qt.AlignLeft, "Address :")
         address_rect = rect.adjusted(font_metrics.width("Address :  "),0,0,0)
         line_top += 3*line_height
@@ -455,17 +455,17 @@ class Invoice(QLabel):
 
         for i in range(row_count+1):
             y = table_top + i*row_height
-            painter.drawLine(table_left, y, table_right, y)
+            painter.drawLine(QPointF(table_left, y), QPointF(table_right, y))
 
         for k in (0,0.68,0.88,1):
             x = table_left + k*table_w
-            painter.drawLine(x, table_top, x, table_bottom)
+            painter.drawLine(QPointF(x, table_top), QPointF(x, table_bottom))
         for k in (0.06,0.78):
             x = table_left + k*table_w
             bottom = table_top + (row_count-3)*row_height
-            painter.drawLine(x, table_top, x, bottom)
+            painter.drawLine(QPointF(x, table_top), QPointF(x, bottom))
 
-        getCellRect = lambda row, col : QRect(column_x[col],table_pos[1]+row*row_height, column_w[col],row_height)
+        getCellRect = lambda row, col : QRectF(column_x[col],table_pos[1]+row*row_height, column_w[col],row_height)
 
         for j,text in enumerate(["#", "Item", "Qty", "Rate", "Price"]):
             painter.drawText(getCellRect(0,j), Qt.AlignCenter, text)
@@ -477,13 +477,13 @@ class Invoice(QLabel):
         painter.setFont(h3_font)
         line_height = QFontMetrics(h3_font, painter.device()).height()
         line_top = table_bottom + 3*line_height
-        rect = QRect(0.65*page_w,line_top, 0.35*page_w, line_height)
+        rect = QRectF(0.65*page_w,line_top, 0.35*page_w, line_height)
         painter.drawText(rect, Qt.AlignCenter, "Signature")
         line_top += 2*line_height
 
         painter.setFont(normal_font)
         line_height = QFontMetrics(normal_font, painter.device()).height()
-        rect = QRect(0, line_top, page_w, line_height)
+        rect = QRectF(0, line_top, page_w, line_height)
         painter.drawText(rect, Qt.AlignHCenter, "---------- Thank You ---------")
 
         # ---------------------- FILL DATA ------------------------
